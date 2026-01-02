@@ -18,9 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> fetchProfile() async {
     final url = Uri.parse(
       'http://192.168.31.137:8000/api/users/profile/${widget.userId}/',
-
     );
-
 
     try {
       final response = await http.get(url);
