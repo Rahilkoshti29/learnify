@@ -1,74 +1,157 @@
 import 'package:flutter/material.dart';
+import 'package:sociohub/profile_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey.shade100,
 
       appBar: AppBar(
-        backgroundColor: const Color(0xffE53935),
+        backgroundColor: const Color(0xffE23744),
+        elevation: 0,
         title: const Text("SocioHub"),
         centerTitle: true,
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
-          children: [
+      body: Column(
+        children: [
 
-            buildCard(Icons.people, "Visitors", () {
-              // Navigate to Visitor Screen
-            }),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: Color(0xffE23744),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
+              ),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Welcome Resident 👋",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  "Manage your society easily",
+                  style: TextStyle(
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          ),
 
-            buildCard(Icons.notifications, "Notice Board", () {
-              // Navigate to Notice Screen
-            }),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+                children: [
 
-            buildCard(Icons.payment, "Payments", () {
-              // Navigate to Payment Screen
-            }),
+                  buildCard(Icons.people, "Visitors"),
+                  buildCard(Icons.notifications, "Notice Board"),
+                  buildCard(Icons.payment, "Payments"),
+                  buildCard(Icons.person, "Profile"),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
 
-            buildCard(Icons.person, "Profile", () {
-              // Navigate to Profile Screen
-            }),
-          ],
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: selectedIndex,
+        selectedItemColor: const Color(0xffE23744),
+        unselectedItemColor: Colors.grey,
+
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+
+          if (index == 0) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => HomeScreen()),
+            );
+          }
+
+          if (index == 1) {
+            // Notice screen later
+          }
+
+          if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ProfileScreen()),
+            );
+          }
+        },
+
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: "Notice",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Profile",
+          ),
+        ],
       ),
     );
   }
 
-  Widget buildCard(IconData icon, String title, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        elevation: 4,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+  Widget buildCard(IconData icon, String title) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+      elevation: 4,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
 
-            Icon(icon, size: 50, color: const Color(0xffE53935)),
+          Icon(
+            icon,
+            size: 50,
+            color: const Color(0xffE23744),
+          ),
 
-            const SizedBox(height: 10),
+          const SizedBox(height: 10),
 
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            )
-
-          ],
-        ),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          )
+        ],
       ),
     );
   }

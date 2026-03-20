@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login_screen.dart';
@@ -10,25 +11,58 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController flatController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool obscurePassword = true;
 
   Future<void> registerUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (_formKey.currentState!.validate()) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString('name', nameController.text);
-    await prefs.setString('flat', flatController.text);
-    await prefs.setString('mobile', mobileController.text);
+      Map<String, dynamic> userData = {
+        "name": nameController.text,
+        "flat": flatController.text,
+        "mobile": mobileController.text,
+        "email": emailController.text,
+        "password": passwordController.text,
+      };
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Registered Successfully")),
-    );
+      await prefs.setString('user_data', jsonEncode(userData));
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Registered Successfully")),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+    }
+  }
+
+  InputDecoration customInput(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon, color: const Color(0xffE23744)),
+      filled: true,
+      fillColor: Colors.grey.shade100,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(
+          color: Color(0xffE23744),
+          width: 2,
+        ),
+      ),
     );
   }
 
@@ -37,92 +71,157 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      appBar: AppBar(
-        backgroundColor: const Color(0xffE53935),
-        title: const Text("Register"),
-      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
 
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
+                  const SizedBox(height: 20),
 
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(
-                labelText: "Full Name",
-                prefixIcon: const Icon(Icons.person),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
+                  const Icon(
+                    Icons.apartment,
+                    size: 90,
+                    color: Color(0xffE23744),
+                  ),
 
-            const SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
-            TextField(
-              controller: flatController,
-              decoration: InputDecoration(
-                labelText: "Flat Number",
-                prefixIcon: const Icon(Icons.home),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            TextField(
-              controller: mobileController,
-              decoration: InputDecoration(
-                labelText: "Mobile Number",
-                prefixIcon: const Icon(Icons.phone),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 25),
-
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: registerUser,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xffE53935),
-                ),
-                child: const Text("Register",style: TextStyle(color: Colors.white)),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Already have an account? "),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => LoginScreen()),
-                    );
-                  },
-                  child: const Text(
-                    "Login",
+                  const Text(
+                    "Create Account",
                     style: TextStyle(
-                      color: Color(0xffE53935),
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
+                      color: Color(0xffE23744),
                     ),
                   ),
-                )
-              ],
-            )
 
-          ],
+                  const SizedBox(height: 8),
+
+                  const Text(
+                    "Register to continue",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 15,
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  TextFormField(
+                    controller: nameController,
+                    decoration: customInput("Full Name", Icons.person),
+                    validator: (value) =>
+                    value!.isEmpty ? "Enter name" : null,
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  TextFormField(
+                    controller: flatController,
+                    decoration: customInput("Flat Number", Icons.home),
+                    validator: (value) =>
+                    value!.isEmpty ? "Enter flat number" : null,
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  TextFormField(
+                    controller: mobileController,
+                    keyboardType: TextInputType.phone,
+                    decoration: customInput("Mobile Number", Icons.phone),
+                    validator: (value) =>
+                    value!.length != 10 ? "Enter valid mobile" : null,
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  TextFormField(
+                    controller: emailController,
+                    decoration: customInput("Email", Icons.email),
+                    validator: (value) =>
+                    !value!.contains('@') ? "Enter valid email" : null,
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  TextFormField(
+                    controller: passwordController,
+                    obscureText: obscurePassword,
+                    decoration: customInput("Password", Icons.lock).copyWith(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: const Color(0xffE23744),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            obscurePassword = !obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+                    validator: (value) =>
+                    value!.length < 6 ? "Minimum 6 characters" : null,
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: registerUser,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xffE23744),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Already have an account? "),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const LoginScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(
+                            color: Color(0xffE23744),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
