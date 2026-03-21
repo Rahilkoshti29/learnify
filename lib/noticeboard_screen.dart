@@ -78,6 +78,12 @@ class _NoticeBoardScreenState extends State<NoticeBoardScreen> {
 
       appBar: AppBar(
         backgroundColor: const Color(0xffE23744),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios_new_sharp, color: Colors.white),
+        ),
+        centerTitle: true,
         title: const Text(
           "Notice Board",
           style: TextStyle(color: Colors.white),

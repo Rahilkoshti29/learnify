@@ -11,11 +11,11 @@ class VisitorScreen extends StatefulWidget {
 
 class _VisitorScreenState extends State<VisitorScreen> {
   List<Map<String, String>> defaultVisitors = [
-    {"name": "Ramesh Patel", "flat": "A-302", "time": "10:30 AM"},
-    {"name": "Courier Delivery", "flat": "B-105", "time": "11:15 AM"},
-    {"name": "Milk Vendor", "flat": "C-210", "time": "7:45 AM"},
-    {"name": "Electrician", "flat": "D-404", "time": "1:20 PM"},
-    {"name": "Guest Visitor", "flat": "A-101", "time": "5:10 PM"},
+    {"name": "Ramesh Patel", "time": "10:30 AM"},
+    {"name": "Courier Delivery", "time": "11:15 AM"},
+    {"name": "Milk Vendor", "time": "7:45 AM"},
+    {"name": "Electrician", "time": "1:20 PM"},
+    {"name": "Guest Visitor", "time": "5:10 PM"},
   ];
 
   List<Map<String, String>> visitors = [];
@@ -79,6 +79,12 @@ class _VisitorScreenState extends State<VisitorScreen> {
       backgroundColor: Colors.grey[100],
 
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios_new_sharp, color: Colors.white),
+        ),
+        centerTitle: true,
         backgroundColor: const Color(0xffE23744),
         title: const Text("Visitors", style: TextStyle(color: Colors.white)),
       ),
@@ -110,13 +116,7 @@ class _VisitorScreenState extends State<VisitorScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
-                  const SizedBox(height: 8),
-
-                  Text("Flat: ${visitors[index]["flat"]!}"),
-
                   const SizedBox(height: 5),
-
                   Text("Time: ${visitors[index]["time"]!}"),
 
                   const SizedBox(height: 15),

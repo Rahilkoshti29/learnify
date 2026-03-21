@@ -97,6 +97,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: Colors.white,
 
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+
+          icon: Icon(Icons.arrow_back_ios_new_sharp, color: Colors.white),
+        ),
         backgroundColor: const Color(0xffE23744),
         title: const Text("Profile", style: TextStyle(color: Colors.white)),
       ),

@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.grey.shade100,
 
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: const Color(0xffE23744),
         elevation: 0,
         title: const Text("SocioHub", style: TextStyle(color: Colors.white)),
