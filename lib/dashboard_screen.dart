@@ -99,7 +99,7 @@ class DashboardPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(18),
                     child: Image.asset(
                       "assets/1.jpg",
-                    //  height: 450,
+                      //  height: 450,
                       width: double.infinity,
                       fit: BoxFit.contain,
                     ),
